@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "next-themes";
 
 interface FlickeringGridProps {
   squareSize?: number;
   gridGap?: number;
   flickerChance?: number;
-  color?: string;
   width?: number;
   height?: number;
   className?: string;
@@ -17,7 +17,6 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   squareSize = 4,
   gridGap = 6,
   flickerChance = 0.3,
-  // Default color will be handled by the theme
   width,
   height,
   className,
@@ -26,8 +25,10 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isInView, setIsInView] = useState(false);
   
+  const { resolvedTheme } = useTheme(); // Get the current theme
+  
   const memoizedColor = useMemo(() => {
-    const color = "rgb(255, 0, 0)"; // Red for dark mode, White for light mode
+    const color = resolvedTheme === "light" ? "rgb(0, 0, 0)" : "rgb(255, 0, 0)"; // Black for light mode, Red for dark mode
     const toRGBA = (color: string) => {
       if (typeof window === "undefined") {
         return `rgba(0, 0, 0,`;
@@ -35,7 +36,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       const canvas = document.createElement("canvas");
       canvas.width = canvas.height = 1;
       const ctx = canvas.getContext("2d");
-      if (!ctx) return "rgba(255, 0, 0,";
+      if (!ctx) return `rgba(0, 0, 0,`; // Fallback to black if context is unavailable
       ctx.fillStyle = color;
       ctx.fillRect(0, 0, 1, 1);
       const data = ctx.getImageData(0, 0, 1, 1).data;
@@ -43,7 +44,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       return `rgba(${r}, ${g}, ${b},`;
     };
     return toRGBA(color);
-  }, []);
+  }, [resolvedTheme]);
 
   const setupCanvas = useCallback(
     (canvas: HTMLCanvasElement) => {
@@ -166,7 +167,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   return (
     <canvas
       ref={canvasRef}
-      className={`size-full pointer-events-none ${className}`}
+      className={`w-full h-full pointer-events-none ${className}`}
       style={{
         width: width || "100%",
         height: height || "100%",

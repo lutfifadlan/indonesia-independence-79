@@ -7,23 +7,22 @@ import { Content } from "@/components/Content";
 
 const Home: React.FC = () => {
   return (
-    <div className="relative w-full min-h-screen bg-background overflow-hidden p-3 ml-1 font-poppins justify-between">
-      <div className="absolute inset-0 ml-1" style={{ pointerEvents: 'none' }}>
+    <div className="w-full min-h-screen bg-background overflow-hidden p-3 font-poppins flex flex-col justify-between">
+      <div className="absolute inset-0" style={{ pointerEvents: 'none' }}>
         <FlickeringGrid />
       </div>
     
-      <div className="relative z-10 flex justify-between items-center mr-3 mb-4">
+      <div className="relative z-10 flex flex-col md:flex-row justify-between items-center mb-4">
         <Header/>
-        <ThemeToggle/>
+        <ThemeToggle />
       </div>
     
-      <div className="relative z-10">
+      <div className="relative z-10 flex-1">
         <Content />
-      </div>
-
-      <footer className="absolute bottom-0 w-full p-6 text-center">
-        <p>&copy; 2024. Created by Mochamad Lutfi Fadlan. All rights reserved.</p>
-      </footer>
+        <footer className="w-full p-2 text-center">
+          <p>&copy; 2024. Created by Mochamad Lutfi Fadlan. All rights reserved.</p>
+        </footer>
+      </div>   
     </div>
   );
 }

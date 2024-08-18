@@ -27,9 +27,9 @@ export function ThemeToggle() {
   return (
     <div className="flex items-center space-x-2 ml-auto">
       <Sun size={34} />
-      <Switch id="dark-mode" checked={isDarkMode} onClick={handleToggle}  />
+      <Switch id="dark-mode" checked={isDarkMode} onClick={handleToggle} />
       <Label htmlFor="dark-mode">
-        <Moon  size={34}/>
+        <Moon size={34} />
       </Label>
     </div>
   );
