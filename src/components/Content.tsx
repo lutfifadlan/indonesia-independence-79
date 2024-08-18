@@ -1,11 +1,14 @@
-"use client";
-import Image from "next/image";
 import React, { useEffect, useId, useRef, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
-export function Content() {
+interface ContentProps {
+  searchQuery: string;
+}
+
+export function Content({ searchQuery }: ContentProps) {
   const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
     null
   );
@@ -30,6 +33,21 @@ export function Content() {
   }, [active]);
 
   useOutsideClick(ref, () => setActive(null));
+
+  // Function to filter cards based on search query
+  const filteredCards = cards.filter((card) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      card.title.toLowerCase().includes(query) ||
+      card.description.toLowerCase().includes(query) ||
+      (typeof card.content === "function" &&
+        card.content().props.children
+          .map((child: any) => (typeof child === "string" ? child : ""))
+          .join("")
+          .toLowerCase()
+          .includes(query))
+    );
+  });
 
   return (
     <>
@@ -99,7 +117,7 @@ export function Content() {
                     </motion.p>
                   </div>
 
-                  <Button onClick={() => window.open(active.ctaLink, '_blank')}>
+                  <Button onClick={() => window.open(active.ctaLink, "_blank")}>
                     {active.ctaText}
                   </Button>
                 </div>
@@ -122,7 +140,7 @@ export function Content() {
         ) : null}
       </AnimatePresence>
       <ul className="mx-auto w-full grid grid-cols-4 gap-4">
-        {cards.map((card, index) => (
+        {filteredCards.map((card) => (
           <motion.div
             layoutId={`card-${card.title}-${id}`}
             key={card.title}
